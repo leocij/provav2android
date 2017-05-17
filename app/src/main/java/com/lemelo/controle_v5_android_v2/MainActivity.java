@@ -1,6 +1,7 @@
 package com.lemelo.controle_v5_android_v2;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -21,13 +22,14 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
     private String serverSide;
-
     private String cookie;
     private String resposta = null;
 
@@ -201,7 +203,60 @@ public class MainActivity extends AppCompatActivity {
     private void CarregaTelaControle() throws ExecutionException, InterruptedException, JSONException, ParseException {
         setContentView(R.layout.activity_controle);
 
-        imprimeControles();
+        final EditText txtControleData = (EditText) findViewById(R.id.txtControleData);
+        final EditText txtControleDescricao = (EditText) findViewById(R.id.txtControleDescricao);
+        final EditText txtControleEntrada = (EditText) findViewById(R.id.txtControleEntrada);
+        final EditText txtControleSaida = (EditText) findViewById(R.id.txtControleSaida);
+
+        final SimpleDateFormat data = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        txtControleData.setText(data.format(Calendar.getInstance().getTime()));
+
+
+        final Button btnControleSalvar = (Button) findViewById(R.id.btnControleSalvar);
+        btnControleSalvar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                JSONObject postControles = new JSONObject();
+
+                try {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    java.util.Date d = sdf.parse(txtControleData.getText().toString());
+                    java.sql.Date dataSql = new java.sql.Date(d.getTime());
+                    postControles.put("data",dataSql);
+                    postControles.put("descricao",txtControleDescricao.getText().toString());
+
+                    String entradaStr = txtControleEntrada.getText().toString();
+
+                    if(entradaStr.equals("")){
+                        entradaStr = "0.0";
+                    }
+
+                    postControles.put("entrada",new BigDecimal(entradaStr));
+
+                    String saidaStr = txtControleSaida.getText().toString();
+
+                    if(saidaStr.equals("")){
+                        saidaStr = "0.0";
+                    }
+                    postControles.put("saida",new BigDecimal(saidaStr));
+
+                    ControlePostAsync controlePostAsync = new ControlePostAsync();
+                    String postRetorno = controlePostAsync.execute(serverSide + "controles", postControles.toString(), MainActivity.this.getCookie()).get();
+
+                    System.out.println(postRetorno);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         final Button btnControleVoltar = (Button) findViewById(R.id.btnControleVoltar);
         btnControleVoltar.setOnClickListener(new View.OnClickListener() {
@@ -211,9 +266,46 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        final Button btControleMostrar = (Button) findViewById(R.id.btControleMostrar);
+        btControleMostrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    imprimeControles();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
 
     private void imprimeControles() throws ExecutionException, InterruptedException, JSONException, ParseException {
+        setContentView(R.layout.activity_imprime_controles);
+
+        final Button btnImprimeControlesVoltar = (Button) findViewById(R.id.btnImprimeControlesVoltar);
+        btnImprimeControlesVoltar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    CarregaTelaControle();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         //System.out.println("Cookie no Post: " + this.getCookie());
 
@@ -261,8 +353,8 @@ public class MainActivity extends AppCompatActivity {
             listControles.add(c1);
 
             ArrayAdapter<Controle> arrayAdapter = new ArrayAdapter<Controle>(MainActivity.this, android.R.layout.simple_list_item_1, listControles);
-            ListView lvControles = (ListView) findViewById(R.id.lvControles);
-            lvControles.setAdapter(arrayAdapter);
+            ListView lvImprimeControles = (ListView) findViewById(R.id.lvImprimeControles);
+            lvImprimeControles.setAdapter(arrayAdapter);
         }
     }
 
@@ -273,6 +365,7 @@ public class MainActivity extends AppCompatActivity {
     public void setCookie(String cookie) {
         this.cookie = cookie;
     }
+
 }
 
 
