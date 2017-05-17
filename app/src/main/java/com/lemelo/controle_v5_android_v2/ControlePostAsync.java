@@ -4,6 +4,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -19,6 +22,16 @@ import java.net.URL;
 
 class ControlePostAsync extends AsyncTask<String, String, String> {
 
+    ProgressBar progressBar;
+    Context context;
+
+    public void setProgressBar(ProgressBar progressBar) {
+        this.progressBar = progressBar;
+    }
+
+    public void setContext(MainActivity context) {
+        this.context = context;
+    }
 
     @Override
     protected String doInBackground(String... params) {
@@ -64,12 +77,15 @@ class ControlePostAsync extends AsyncTask<String, String, String> {
     }
 
     @Override
-    protected void onPreExecute(){
-
-    }
-
-    @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
+        progressBar.setVisibility(View.GONE);
+        Toast.makeText(context, "Dados salvos", Toast.LENGTH_LONG).show();
+
     }
+
+    protected void onProgressUpdate(Integer... progress){
+        progressBar.setProgress(progress[0]);
+    }
+
 }

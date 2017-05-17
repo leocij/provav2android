@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -43,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
     private void CarregaTelaLogin() {
         setContentView(R.layout.activity_login);
 
+        final ProgressBar pbLogin = (ProgressBar) findViewById(R.id.pbLogin);
+        pbLogin.setVisibility(View.GONE);
+
         final Button btnLoginLogin = (Button) findViewById(R.id.btnLoginLogin);
         btnLoginLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
 
                 try {
 
+                    pbLogin.setVisibility(View.VISIBLE);
+                    userPostAsync.setProgressBar(pbLogin);
+                    userPostAsync.setContext(MainActivity.this);
                     resposta = userPostAsync.execute(serverSide + "login",postParamaters).get();
 
                     if(resposta != null){
@@ -211,6 +218,8 @@ public class MainActivity extends AppCompatActivity {
         final SimpleDateFormat data = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         txtControleData.setText(data.format(Calendar.getInstance().getTime()));
 
+        final ProgressBar pbControle = (ProgressBar) findViewById(R.id.pbControle);
+        pbControle.setVisibility(View.GONE);
 
         final Button btnControleSalvar = (Button) findViewById(R.id.btnControleSalvar);
         btnControleSalvar.setOnClickListener(new View.OnClickListener() {
@@ -242,6 +251,9 @@ public class MainActivity extends AppCompatActivity {
                     postControles.put("saida",new BigDecimal(saidaStr));
 
                     ControlePostAsync controlePostAsync = new ControlePostAsync();
+                    pbControle.setVisibility(View.VISIBLE);
+                    controlePostAsync.setProgressBar(pbControle);
+                    controlePostAsync.setContext(MainActivity.this);
                     String postRetorno = controlePostAsync.execute(serverSide + "controles", postControles.toString(), MainActivity.this.getCookie()).get();
 
                     System.out.println(postRetorno);
@@ -289,6 +301,9 @@ public class MainActivity extends AppCompatActivity {
     private void imprimeControles() throws ExecutionException, InterruptedException, JSONException, ParseException {
         setContentView(R.layout.activity_imprime_controles);
 
+        final ProgressBar pbImprimeControles = (ProgressBar) findViewById(R.id.pbImprimeControles);
+        pbImprimeControles.setVisibility(View.GONE);
+
         final Button btnImprimeControlesVoltar = (Button) findViewById(R.id.btnImprimeControlesVoltar);
         btnImprimeControlesVoltar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -310,6 +325,9 @@ public class MainActivity extends AppCompatActivity {
         //System.out.println("Cookie no Post: " + this.getCookie());
 
         ControleGetAsync controleGetAsync = new ControleGetAsync();
+        pbImprimeControles.setVisibility(View.VISIBLE);
+        controleGetAsync.setProgressBar(pbImprimeControles);
+        controleGetAsync.setContext(MainActivity.this);
 
         String controles = controleGetAsync.execute(serverSide + "controles", this.getCookie()).get();
 

@@ -2,6 +2,9 @@ package com.lemelo.controle_v5_android_v2;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,6 +19,17 @@ import java.net.URL;
  */
 
 public class ControleGetAsync extends AsyncTask<String,Void,String> {
+
+    ProgressBar progressBar;
+    MainActivity context;
+
+    public void setProgressBar(ProgressBar progressBar) {
+        this.progressBar = progressBar;
+    }
+
+    public void setContext(MainActivity context) {
+        this.context = context;
+    }
 
     @Override
     protected String doInBackground(String... params) {
@@ -66,10 +80,18 @@ public class ControleGetAsync extends AsyncTask<String,Void,String> {
         return buffer.toString();
     }
 
-
     @Override
-    protected void onPostExecute(String buffer){
+    protected void onPostExecute(String result) {
+        super.onPostExecute(result);
+        progressBar.setVisibility(View.GONE);
+        Toast.makeText(context, "Dados retornados", Toast.LENGTH_LONG).show();
 
     }
+
+    protected void onProgressUpdate(Integer... progress){
+        progressBar.setProgress(progress[0]);
+    }
+
+
 }
 
