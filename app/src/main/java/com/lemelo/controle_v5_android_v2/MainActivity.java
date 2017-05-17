@@ -2,10 +2,13 @@ package com.lemelo.controle_v5_android_v2;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private String serverSide;
     private String cookie;
     private String resposta = null;
+    private Controle controle;
+    private Acao acao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -340,15 +345,15 @@ public class MainActivity extends AppCompatActivity {
 
         //DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
-        for(int i = 0; i < arr.length(); i++){
+        for(int i = 0; i < arr.length(); i++) {
             Controle c1 = new Controle();
             JSONObject jsonObject = arr.getJSONObject(i);
 
-            if(jsonObject.has("identifier")){
+            if (jsonObject.has("identifier")) {
                 c1.setIdentifier(jsonObject.getLong("identifier"));
             }
 
-            if(jsonObject.has("data")){
+            if (jsonObject.has("data")) {
                 String strData = jsonObject.getString("data").toString();
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 Date utilData = new Date(dateFormat.parse(strData).getTime());
@@ -356,24 +361,82 @@ public class MainActivity extends AppCompatActivity {
                 c1.setData(sqlData);
             }
 
-            if(jsonObject.has("descricao")){
+            if (jsonObject.has("descricao")) {
                 c1.setDescricao(jsonObject.getString("descricao"));
             }
 
-            if(jsonObject.has("entrada")){
+            if (jsonObject.has("entrada")) {
                 c1.setEntrada(new BigDecimal(jsonObject.getDouble("entrada")));
             }
 
-            if(jsonObject.has("saida")){
+            if (jsonObject.has("saida")) {
                 c1.setSaida(new BigDecimal(jsonObject.getDouble("saida")));
             }
-
             listControles.add(c1);
+        }
+
 
             ArrayAdapter<Controle> arrayAdapter = new ArrayAdapter<Controle>(MainActivity.this, android.R.layout.simple_list_item_1, listControles);
             ListView lvImprimeControles = (ListView) findViewById(R.id.lvImprimeControles);
             lvImprimeControles.setAdapter(arrayAdapter);
-        }
+
+            lvImprimeControles.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView parent, View view, int position, long id) {
+                    Controle controleSelecionado = (Controle) parent.getItemAtPosition(position);
+                    trataControleSelecionado(controleSelecionado);
+                }
+            });
+    }
+
+    private void trataControleSelecionado(final Controle controleSelecionado) {
+        AlertDialog.Builder dialogo = new AlertDialog.Builder(MainActivity.this);
+        dialogo.setTitle("Editar / Apagar?");
+        dialogo.setMessage(controleSelecionado.toString());
+
+        dialogo.setNegativeButton("Editar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                controle = controleSelecionado;
+                acao = Acao.EDITAR;
+                try {
+                    CarregaTelaControle();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        dialogo.setPositiveButton("Apagar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                Long idDelete = controleSelecionado.getIdentifier();
+                ControleDeleteAsync controleDeleteAsync = new ControleDeleteAsync();
+                controleDeleteAsync.execute(serverSide + "controles/" + idDelete, MainActivity.this.getCookie());
+
+                try {
+                    imprimeControles();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        dialogo.setNeutralButton("Cancelar", null);
+        dialogo.show();
     }
 
     public String getCookie() {
