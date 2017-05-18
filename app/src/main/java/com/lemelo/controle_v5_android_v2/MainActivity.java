@@ -161,6 +161,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        final Button btnMainParcelamento = (Button) findViewById(R.id.btnMainParcelamento);
+        btnMainParcelamento.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CarregaTelaParcelamento();
+            }
+        });
+
+    }
+
+    private void CarregaTelaParcelamento() {
+        setContentView(R.layout.activity_parcelamento);
     }
 
     private void CarregaTelaEmprestimo() {
@@ -168,12 +180,260 @@ public class MainActivity extends AppCompatActivity {
 
         final EditText txtEmprestimoData = (EditText) findViewById(R.id.txtEmprestimoData);
         final EditText txtEmprestimoDescricao = (EditText) findViewById(R.id.txtEmprestimoDescricao);
+        final EditText txtEmprestimoValor = (EditText) findViewById(R.id.txtEmprestimoValor);
+        final EditText txtEmprestimoLimitePgto = (EditText) findViewById(R.id.txtEmprestimoLimitePgto);
+
+        SimpleDateFormat formatEmprestimo = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        txtEmprestimoData.setText(formatEmprestimo.format(Calendar.getInstance().getTime()));
+        formatEmprestimo = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        Calendar c = Calendar.getInstance();
+        c.setTime(Calendar.getInstance().getTime());
+        c.add(Calendar.YEAR, 2);
+        txtEmprestimoLimitePgto.setText(formatEmprestimo.format(c.getTime()));
+
+        final ProgressBar pbEmprestimo = (ProgressBar) findViewById(R.id.pbEmprestimo);
+        pbEmprestimo.setVisibility(View.GONE);
+
+        final Button btnEmprestimoSalvar = (Button) findViewById(R.id.btnEmprestimoSalvar);
+        final SimpleDateFormat finalFormatEmprestimo = formatEmprestimo;
+        btnEmprestimoSalvar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JSONObject postEmprestimos = new JSONObject();
+
+                try {
+                    java.util.Date utilEmprestimo = finalFormatEmprestimo.parse(txtEmprestimoData.getText().toString());
+                    java.sql.Date sqlEmprestimo = new java.sql.Date(utilEmprestimo.getTime());
+                    postEmprestimos.put("data", sqlEmprestimo);
+                    postEmprestimos.put("descricao", txtEmprestimoDescricao.getText().toString());
+                    String valorEmprestimo = txtEmprestimoValor.getText().toString();
+                    if(valorEmprestimo.equals("")){
+                        valorEmprestimo = "0.0";
+                    }
+                    postEmprestimos.put("valor", new BigDecimal(valorEmprestimo));
+                    utilEmprestimo = finalFormatEmprestimo.parse(txtEmprestimoLimitePgto.getText().toString());
+                    sqlEmprestimo = new java.sql.Date(utilEmprestimo.getTime());
+                    postEmprestimos.put("limitepgto", sqlEmprestimo);
+
+                    ControlePostAsync controlePostAsync = new ControlePostAsync();
+                    pbEmprestimo.setVisibility(View.VISIBLE);
+                    controlePostAsync.setProgressBar(pbEmprestimo);
+                    controlePostAsync.setContext(MainActivity.this);
+                    String postRetorno = controlePostAsync.execute(serverSide + "emprestimos", postEmprestimos.toString(), MainActivity.this.getCookie()).get();
+
+                    System.out.println(postRetorno);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        final Button btnEmprestimoMostrar = (Button) findViewById(R.id.btnEmprestimoMostrar);
+        btnEmprestimoMostrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    imprimeEmprestimos();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         final Button btnEmprestimoVoltar = (Button) findViewById(R.id.btnEmprestimoVoltar);
         btnEmprestimoVoltar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CarregaTelaPrincipal();
+            }
+        });
+    }
+
+    private void imprimeEmprestimos() throws ExecutionException, InterruptedException, JSONException, ParseException {
+        setContentView(R.layout.activity_imprime_emprestimos);
+        final ProgressBar pbImprimeEmprestimos = (ProgressBar) findViewById(R.id.pbImprimeEmprestimos);
+        pbImprimeEmprestimos.setVisibility(View.GONE);
+
+        final Button btnImprimeEmprestimosVoltar = (Button) findViewById(R.id.btnImprimeEmprestimosVoltar);
+        btnImprimeEmprestimosVoltar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CarregaTelaEmprestimo();
+            }
+        });
+
+        ControleGetAsync controleGetAsync = new ControleGetAsync();
+        pbImprimeEmprestimos.setVisibility(View.VISIBLE);
+        controleGetAsync.setProgressBar(pbImprimeEmprestimos);
+        controleGetAsync.setContext(MainActivity.this);
+
+        String emprestimos = controleGetAsync.execute(serverSide + "emprestimos", this.getCookie()).get();
+
+        JSONArray jsonArrayEmprestimos = new JSONArray(emprestimos);
+
+        List<Emprestimo> listEmprestimos = new ArrayList<>();
+        for(int i = 0; i < jsonArrayEmprestimos.length(); i++){
+            Emprestimo e1 = new Emprestimo();
+            JSONObject jsonImprimeEmprestimos = jsonArrayEmprestimos.getJSONObject(i);
+
+            if(jsonImprimeEmprestimos.has("identifier")){
+                e1.setIdentifier(jsonImprimeEmprestimos.getLong("identifier"));
+            }
+            if(jsonImprimeEmprestimos.has("data")){
+                String dataImprimeEmprestimos = jsonImprimeEmprestimos.getString("data").toString();
+                DateFormat formatImprimeEmprestimos = new SimpleDateFormat("yyyy-MM-dd");
+                Date utilImprimeEmprestimos = new Date(formatImprimeEmprestimos.parse(dataImprimeEmprestimos).getTime());
+                java.sql.Date sqlImprimeEmprestimos = new java.sql.Date(utilImprimeEmprestimos.getTime());
+                e1.setData(sqlImprimeEmprestimos);
+            }
+            if(jsonImprimeEmprestimos.has("descricao")){
+                e1.setDescricao(jsonImprimeEmprestimos.getString("descricao"));
+            }
+            if(jsonImprimeEmprestimos.has("valor")){
+                e1.setValor(new BigDecimal(jsonImprimeEmprestimos.getDouble("valor")));
+            }
+            if(jsonImprimeEmprestimos.has("limitepgto")){
+                String dataImprimeEmprestimos = jsonImprimeEmprestimos.getString("limitepgto").toString();
+                DateFormat formatImprimeEmprestimos = new SimpleDateFormat("yyyy-MM-dd");
+                Date utilImprimeEmprestimos = new Date(formatImprimeEmprestimos.parse(dataImprimeEmprestimos).getTime());
+                java.sql.Date sqlImprimeEmprestimos = new java.sql.Date(utilImprimeEmprestimos.getTime());
+                e1.setLimitepgto(sqlImprimeEmprestimos);
+            }
+            listEmprestimos.add(e1);
+        }
+
+        ArrayAdapter<Emprestimo> emprestimoArrayAdapter = new ArrayAdapter<Emprestimo>(MainActivity.this,android.R.layout.simple_list_item_1,listEmprestimos);
+        ListView lvImprimeEmprestimos = (ListView) findViewById(R.id.lvImprimeEmprestimos);
+        lvImprimeEmprestimos.setAdapter(emprestimoArrayAdapter);
+
+        lvImprimeEmprestimos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Emprestimo emprestimoSelecionado = (Emprestimo) parent.getItemAtPosition(position);
+                trataEmprestimoSelecionado(emprestimoSelecionado);
+            }
+        });
+    }
+
+    private void trataEmprestimoSelecionado(final Emprestimo emprestimoSelecionado) {
+        AlertDialog.Builder dialogo = new AlertDialog.Builder(MainActivity.this);
+        dialogo.setTitle("Editar / Apagar?");
+        dialogo.setMessage(emprestimoSelecionado.toString());
+
+        dialogo.setNegativeButton("Editar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                CarregaTelaEditarEmprestimo(emprestimoSelecionado);
+            }
+        });
+
+        dialogo.setPositiveButton("Apagar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                Long idDelete = emprestimoSelecionado.getIdentifier();
+                ControleDeleteAsync controleDeleteAsync = new ControleDeleteAsync();
+                controleDeleteAsync.execute(serverSide + "emprestimos/" + idDelete, MainActivity.this.getCookie());
+
+                try {
+                    imprimeEmprestimos();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        dialogo.setNeutralButton("Cancelar", null);
+        dialogo.show();
+    }
+
+    private void CarregaTelaEditarEmprestimo(final Emprestimo emprestimoSelecionado) {
+        setContentView(R.layout.activity_edita_emprestimo);
+        final EditText txtEditaEmprestimoData = (EditText) findViewById(R.id.txtEditaEmprestimoData);
+        txtEditaEmprestimoData.setText(emprestimoSelecionado.getData().toString());
+        final EditText txtEditaEmprestimoDescricao = (EditText) findViewById(R.id.txtEditaEmprestimoDescricao);
+        txtEditaEmprestimoDescricao.setText(emprestimoSelecionado.getDescricao().toString());
+        final EditText txtEditaEmprestimoValor = (EditText) findViewById(R.id.txtEditaEmprestimoValor);
+        txtEditaEmprestimoValor.setText(emprestimoSelecionado.getValor().toString());
+        final EditText txtEditaEmprestimoLimitePgto = (EditText) findViewById(R.id.txtEditaEmprestimoLimitePgto);
+        txtEditaEmprestimoLimitePgto.setText(emprestimoSelecionado.getLimitepgto().toString());
+
+        final ProgressBar pbEditaEmprestimo = (ProgressBar) findViewById(R.id.pbEditaEmprestimo);
+        pbEditaEmprestimo.setVisibility(View.GONE);
+
+        final Button btnEditaEmprestimoSalvar = (Button) findViewById(R.id.btnEditaEmprestimoSalvar);
+        btnEditaEmprestimoSalvar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JSONObject jsonObject = new JSONObject();
+                final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                try {
+                    java.util.Date date = simpleDateFormat.parse(txtEditaEmprestimoData.getText().toString());
+                    java.sql.Date date1 = new java.sql.Date(date.getTime());
+                    jsonObject.put("data",date1);
+                    jsonObject.put("descricao",txtEditaEmprestimoDescricao.getText().toString());
+                    String s = txtEditaEmprestimoValor.getText().toString();
+                    if(s.equals("")){
+                        s = "0.0";
+                    }
+                    jsonObject.put("valor",new BigDecimal(s));
+                    date = simpleDateFormat.parse(txtEditaEmprestimoLimitePgto.getText().toString());
+                    date1 = new java.sql.Date(date.getTime());
+                    jsonObject.put("limitepgto",date1);
+
+                    ControlePutAsync controlePutAsync = new ControlePutAsync();
+                    pbEditaEmprestimo.setVisibility(View.VISIBLE);
+                    controlePutAsync.setProgressBar(pbEditaEmprestimo);
+                    controlePutAsync.setContext(MainActivity.this);
+                    String postRetorno = controlePutAsync.execute(serverSide + "emprestimos/" + emprestimoSelecionado.getIdentifier(), jsonObject.toString(), MainActivity.this.getCookie()).get();
+
+                    System.out.println(postRetorno);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+        final Button btnEditaEmprestimoCancelar = (Button) findViewById(R.id.btnEditaEmprestimoCancelar);
+        btnEditaEmprestimoCancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    imprimeEmprestimos();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

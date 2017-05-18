@@ -6,28 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/btnEmprestimoVoltar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Voltar"
-        app:layout_constraintLeft_toRightOf="@+id/btnEmprestimoSalvar"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/txtEmprestimoLimitePgto" />
-
-    <Button
-        android:id="@+id/btnEmprestimoSalvar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Salvar"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/txtEmprestimoLimitePgto" />
-
     <TextView
-        android:id="@+id/lbEmprestimoData"
+        android:id="@+id/lbEditaEmprestimoData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Data:"
@@ -37,59 +17,37 @@
         android:layout_marginTop="8dp" />
 
     <TextView
-        android:id="@+id/lbEmprestimoDescricao"
+        android:id="@+id/lbEditaEmprestimoDescricao"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Descrição:"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/txtEmprestimoData" />
+        app:layout_constraintTop_toBottomOf="@+id/txtEditaEmprestimoData" />
 
     <TextView
-        android:id="@+id/lbEmprestimoValor"
+        android:id="@+id/lbEditaEmprestimoValor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Valor:"
+        android:text="lbEditaEmprestimoValor:"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/txtEmprestimoDescricao" />
+        app:layout_constraintTop_toBottomOf="@+id/txtEditaEmprestimoDescricao" />
 
     <TextView
-        android:id="@+id/lbEmprestimoLimitePgto"
+        android:id="@+id/lbEditaEmprestimoLimitePgto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Limite de Pagamento:"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/txtEmprestimoValor" />
-
-    <ProgressBar
-        android:id="@+id/pbEmprestimo"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/btnEmprestimoMostrar"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent" />
-
-    <Button
-        android:id="@+id/btnEmprestimoMostrar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Mostrar Emprestimos"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/btnEmprestimoSalvar" />
+        app:layout_constraintTop_toBottomOf="@+id/txtEditaEmprestimoValor" />
 
     <EditText
-        android:id="@+id/txtEmprestimoData"
+        android:id="@+id/txtEditaEmprestimoData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -97,10 +55,10 @@
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/lbEmprestimoData" />
+        app:layout_constraintTop_toBottomOf="@+id/lbEditaEmprestimoData" />
 
     <EditText
-        android:id="@+id/txtEmprestimoDescricao"
+        android:id="@+id/txtEditaEmprestimoDescricao"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -108,10 +66,10 @@
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/lbEmprestimoDescricao" />
+        app:layout_constraintTop_toBottomOf="@+id/lbEditaEmprestimoDescricao" />
 
     <EditText
-        android:id="@+id/txtEmprestimoValor"
+        android:id="@+id/txtEditaEmprestimoValor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -119,10 +77,10 @@
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/lbEmprestimoValor" />
+        app:layout_constraintTop_toBottomOf="@+id/lbEditaEmprestimoValor" />
 
     <EditText
-        android:id="@+id/txtEmprestimoLimitePgto"
+        android:id="@+id/txtEditaEmprestimoLimitePgto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -130,6 +88,37 @@
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/lbEmprestimoLimitePgto" />
+        app:layout_constraintTop_toBottomOf="@+id/lbEditaEmprestimoLimitePgto" />
 
+    <Button
+        android:id="@+id/btnEditaEmprestimoSalvar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Salvar"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/txtEditaEmprestimoLimitePgto" />
+
+    <Button
+        android:id="@+id/btnEditaEmprestimoCancelar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancelar"
+        app:layout_constraintLeft_toRightOf="@+id/btnEditaEmprestimoSalvar"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/txtEditaEmprestimoLimitePgto" />
+
+    <ProgressBar
+        android:id="@+id/pbEditaEmprestimo"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/btnEditaEmprestimoCancelar" />
 </android.support.constraint.ConstraintLayout>
