@@ -152,6 +152,30 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        final Button btnMainEmprestimo = (Button) findViewById(R.id.btnMainEmprestimo);
+        btnMainEmprestimo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CarregaTelaEmprestimo();
+            }
+        });
+
+    }
+
+    private void CarregaTelaEmprestimo() {
+        setContentView(R.layout.activity_emprestimo);
+
+        final EditText txtEmprestimoData = (EditText) findViewById(R.id.txtEmprestimoData);
+        final EditText txtEmprestimoDescricao = (EditText) findViewById(R.id.txtEmprestimoDescricao);
+
+        final Button btnEmprestimoVoltar = (Button) findViewById(R.id.btnEmprestimoVoltar);
+        btnEmprestimoVoltar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CarregaTelaPrincipal();
+            }
+        });
     }
 
     private void CarregaTelaBarganha() throws InterruptedException, ExecutionException, ParseException, JSONException {
@@ -308,8 +332,8 @@ public class MainActivity extends AppCompatActivity {
         dialogo.setNegativeButton("Editar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //CarregaTelaEditarBarganha(barganhaSelecionado);
-                //// TODO: 18/05/2017
+                CarregaTelaEditarBarganha(barganhaSelecionado);
+
             }
         });
 
@@ -337,6 +361,74 @@ public class MainActivity extends AppCompatActivity {
 
         dialogo.setNeutralButton("Cancelar", null);
         dialogo.show();
+    }
+
+    private void CarregaTelaEditarBarganha(final Barganha barganhaSelecionado) {
+        setContentView(R.layout.activity_edita_barganha);
+
+        final EditText txtEditaBarganhaData = (EditText) findViewById(R.id.txtEditaBarganhaData);
+        txtEditaBarganhaData.setText(barganhaSelecionado.getData().toString());
+        final EditText txtEditaBarganhaDescricao = (EditText) findViewById(R.id.txtEditaBarganhaDescricao);
+        txtEditaBarganhaDescricao.setText(barganhaSelecionado.getDescricao().toString());
+        final EditText txtEditaBarganhaValor = (EditText) findViewById(R.id.txtEditaBarganhaValor);
+        txtEditaBarganhaValor.setText(barganhaSelecionado.getValor().toString());
+
+        final ProgressBar pbEditaBarganha = (ProgressBar) findViewById(R.id.pbEditaBarganha);
+        pbEditaBarganha.setVisibility(View.GONE);
+
+        final Button btnEditaBarganhaSalvar = (Button) findViewById(R.id.btnEditaBarganhaSalvar);
+        btnEditaBarganhaSalvar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JSONObject jsonEditaBarganha = new JSONObject();
+                final SimpleDateFormat formatEditaBarganha = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                try {
+                    java.util.Date utilEditaBarganha = formatEditaBarganha.parse(txtEditaBarganhaData.getText().toString());
+                    java.sql.Date sqlEditaBarganha = new java.sql.Date(utilEditaBarganha.getTime());
+                    jsonEditaBarganha.put("data", sqlEditaBarganha);
+                    jsonEditaBarganha.put("descricao", txtEditaBarganhaDescricao.getText().toString());
+                    String valorEditaBarganha = txtEditaBarganhaValor.getText().toString();
+                    if(valorEditaBarganha.equals("")){
+                        valorEditaBarganha = "0.0";
+                    }
+                    jsonEditaBarganha.put("valor", new BigDecimal(valorEditaBarganha));
+
+                    ControlePutAsync controlePutAsync = new ControlePutAsync();
+                    pbEditaBarganha.setVisibility(View.VISIBLE);
+                    controlePutAsync.setProgressBar(pbEditaBarganha);
+                    controlePutAsync.setContext(MainActivity.this);
+                    String postRetorno = controlePutAsync.execute(serverSide + "barganhas/" + barganhaSelecionado.getIdentifier(), jsonEditaBarganha.toString(), MainActivity.this.getCookie()).get();
+
+                    System.out.println(postRetorno);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        final Button btnEditaBarganhaCancelar = (Button) findViewById(R.id.btnEditaBarganhaCancelar);
+        btnEditaBarganhaCancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    imprimeBarganhas();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void CarregaTelaControle() throws ExecutionException, InterruptedException, JSONException, ParseException {
