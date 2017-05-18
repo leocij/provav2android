@@ -48,7 +48,7 @@ class Barganha {
     @Override
     public String toString() {
         return "Data: " + data +
-                "Descricao: " + descricao +
-                "Valor: " + valor;
+                "\nDescricao: " + descricao +
+                "\nValor: " + valor;
     }
 }
