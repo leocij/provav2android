@@ -1,7 +1,6 @@
 package com.lemelo.controle_v5_android_v2;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -170,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void imprimeBarganhas() throws ExecutionException, InterruptedException, JSONException, ParseException {
+        setContentView(R.layout.activity_imprime_barganhas);
         BarganhaGetAsync barganhaGetAsync = new BarganhaGetAsync();
 
         String barganhas = barganhaGetAsync.execute(serverSide + "barganhas", this.getCookie()).get();
@@ -399,17 +399,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 controle = controleSelecionado;
                 acao = Acao.EDITAR;
-                try {
-                    CarregaTelaControle();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+
+                CarregaTelaEditarControle(controleSelecionado);
+
             }
         });
 
@@ -437,6 +429,83 @@ public class MainActivity extends AppCompatActivity {
 
         dialogo.setNeutralButton("Cancelar", null);
         dialogo.show();
+    }
+
+    private void CarregaTelaEditarControle(final Controle controleSelecionado) {
+        setContentView(R.layout.activity_edita_controle);
+
+        final EditText txtEditaControleData = (EditText) findViewById(R.id.txtEditaControleData);
+        txtEditaControleData.setText(controleSelecionado.getData().toString());
+        final EditText txtEditaControleDescricao = (EditText) findViewById(R.id.txtEditaControleDescricao);
+        txtEditaControleDescricao.setText(controleSelecionado.getDescricao().toString());
+        final EditText txtEditaControleEntrada = (EditText) findViewById(R.id.txtEditaControleEntrada);
+        txtEditaControleEntrada.setText(controleSelecionado.getEntrada().toString());
+        final EditText txtEditaControleSaida = (EditText) findViewById(R.id.txtEditaControleSaida);
+        txtEditaControleSaida.setText(controleSelecionado.getSaida().toString());
+
+        final ProgressBar pbEditaControle = (ProgressBar) findViewById(R.id.pbEditaControle);
+        pbEditaControle.setVisibility(View.GONE);
+
+        final Button btnEditaControleSalvar = (Button) findViewById(R.id.btnEditaControleSalvar);
+        btnEditaControleSalvar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JSONObject jsonEditaControle = new JSONObject();
+
+                final SimpleDateFormat formatEditaControle = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                try {
+                    java.util.Date utilEditaControle = formatEditaControle.parse(txtEditaControleData.getText().toString());
+                    java.sql.Date sqlEditaControle = new java.sql.Date(utilEditaControle.getTime());
+                    jsonEditaControle.put("data",sqlEditaControle);
+                    jsonEditaControle.put("descricao",txtEditaControleDescricao.getText().toString());
+                    String entradaEditaControle = txtEditaControleEntrada.getText().toString();
+                    if(entradaEditaControle.equals("")){
+                        entradaEditaControle = "0.0";
+                    }
+                    jsonEditaControle.put("entrada",new BigDecimal(entradaEditaControle));
+                    String saidaEditaControle = txtEditaControleSaida.getText().toString();
+                    if(saidaEditaControle.equals("")){
+                        saidaEditaControle = "0.0";
+                    }
+                    jsonEditaControle.put("saida", new BigDecimal(saidaEditaControle));
+
+                    ControlePutAsync controlePutAsync = new ControlePutAsync();
+                    pbEditaControle.setVisibility(View.VISIBLE);
+                    controlePutAsync.setProgressBar(pbEditaControle);
+                    controlePutAsync.setContext(MainActivity.this);
+                    String postRetorno = controlePutAsync.execute(serverSide + "controles/" + controleSelecionado.getIdentifier(), jsonEditaControle.toString(), MainActivity.this.getCookie()).get();
+
+                    System.out.println(postRetorno);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
+        final Button btnEditaControleCancelar = (Button) findViewById(R.id.btnEditaControleCancelar);
+        btnEditaControleCancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    imprimeControles();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public String getCookie() {

@@ -6,28 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/btnControleVoltar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Voltar"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/txtControleSaida"
-        app:layout_constraintLeft_toRightOf="@+id/btnControleSalvar"
-        android:layout_marginLeft="8dp" />
-
-    <Button
-        android:id="@+id/btnControleSalvar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Salvar"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/txtControleSaida" />
-
     <TextView
-        android:id="@+id/lbControleData"
+        android:id="@+id/lbEditaControleData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Data:"
@@ -36,8 +16,38 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="8dp" />
 
+    <TextView
+        android:id="@+id/lbEditaControleDescricao"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Descrição:"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/txtEditaControleData" />
+
+    <TextView
+        android:id="@+id/lbEditaControleSaida"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Saída:"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/txtEditaControleEntrada" />
+
+    <TextView
+        android:id="@+id/lbEditaControleEntrada"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Entrada:"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/txtEditaControleDescricao" />
+
     <EditText
-        android:id="@+id/txtControleData"
+        android:id="@+id/txtEditaControleData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -45,20 +55,10 @@
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/lbControleData" />
-
-    <TextView
-        android:id="@+id/lbControleDescricao"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Descrição:"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/txtControleData" />
+        app:layout_constraintTop_toBottomOf="@+id/lbEditaControleData" />
 
     <EditText
-        android:id="@+id/txtControleDescricao"
+        android:id="@+id/txtEditaControleDescricao"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -66,20 +66,10 @@
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/lbControleDescricao" />
-
-    <TextView
-        android:id="@+id/lbControleEntrada"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Entrada:"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/txtControleDescricao" />
+        app:layout_constraintTop_toBottomOf="@+id/lbEditaControleDescricao" />
 
     <EditText
-        android:id="@+id/txtControleEntrada"
+        android:id="@+id/txtEditaControleEntrada"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -87,20 +77,10 @@
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/lbControleEntrada" />
-
-    <TextView
-        android:id="@+id/lbControleSaida"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Saída:"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/txtControleEntrada" />
+        app:layout_constraintTop_toBottomOf="@+id/lbEditaControleEntrada" />
 
     <EditText
-        android:id="@+id/txtControleSaida"
+        android:id="@+id/txtEditaControleSaida"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -108,29 +88,37 @@
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/lbControleSaida" />
+        app:layout_constraintTop_toBottomOf="@+id/lbEditaControleSaida" />
 
     <Button
-        android:id="@+id/btControleMostrar"
-        android:layout_width="182dp"
-        android:layout_height="57dp"
-        android:text="Mostrar Controles"
+        android:id="@+id/btnEditaControleSalvar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Salvar"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/btnControleSalvar" />
+        app:layout_constraintTop_toBottomOf="@+id/txtEditaControleSaida" />
+
+    <Button
+        android:id="@+id/btnEditaControleCancelar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancelar"
+        app:layout_constraintLeft_toRightOf="@+id/btnEditaControleSalvar"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/txtEditaControleSaida" />
 
     <ProgressBar
-        android:id="@+id/pbControle"
+        android:id="@+id/pbEditaControle"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/btControleMostrar" />
-
-
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnEditaControleCancelar" />
 </android.support.constraint.ConstraintLayout>
