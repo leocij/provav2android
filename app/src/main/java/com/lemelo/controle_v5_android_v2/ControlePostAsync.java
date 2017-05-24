@@ -41,7 +41,7 @@ class ControlePostAsync extends AsyncTask<String, String, String> {
         try {
             httpURLConnection = (HttpURLConnection) new URL(params[0]).openConnection();
             httpURLConnection.setRequestMethod("POST");
-            httpURLConnection.setRequestProperty("Content-Type", "application/json");
+            httpURLConnection.setRequestProperty("Content-Type", "application/json;charset=utf-8");
             httpURLConnection.setRequestProperty("Cookie","JSESSIONID=" + params[2]);
             httpURLConnection.setDoOutput(true);
 
@@ -52,19 +52,23 @@ class ControlePostAsync extends AsyncTask<String, String, String> {
 
             int codeResponse = httpURLConnection.getResponseCode();
 
+            data = "" + codeResponse;
+
             if (codeResponse != 201) {
                 throw new RuntimeException("Erro HTTP: " + httpURLConnection.getResponseCode());
             }
 
-            InputStream in = httpURLConnection.getInputStream();
-            InputStreamReader inputStreamReader = new InputStreamReader(in);
 
-            int inputStreamData = inputStreamReader.read();
-            while (inputStreamData != -1) {
-                char current = (char) inputStreamData;
-                inputStreamData = inputStreamReader.read();
-                data += current;
-            }
+
+//            InputStream in = httpURLConnection.getInputStream();
+//            InputStreamReader inputStreamReader = new InputStreamReader(in);
+//
+//            int inputStreamData = inputStreamReader.read();
+//            while (inputStreamData != -1) {
+//                char current = (char) inputStreamData;
+//                inputStreamData = inputStreamReader.read();
+//                data += current;
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -80,7 +84,12 @@ class ControlePostAsync extends AsyncTask<String, String, String> {
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
         progressBar.setVisibility(View.GONE);
-        Toast.makeText(context, "Dados salvos", Toast.LENGTH_LONG).show();
+
+        if(result.equals("201")){
+            Toast.makeText(context, "Dados salvos", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(context, "Erro HTTP " + result, Toast.LENGTH_LONG).show();
+        }
 
     }
 

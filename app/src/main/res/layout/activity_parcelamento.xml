@@ -1,135 +1,205 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="HardcodedText">
+<android.support.constraint.ConstraintLayout
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@mipmap/background">
 
     <TextView
         android:id="@+id/lbParcelamentoDia"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Dia:"
         android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Dia:"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/lbParcelamentoMes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Mês:"
         android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/editText2" />
+        android:text="Mês:"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtParcelamentoDescricao" />
 
     <TextView
         android:id="@+id/lbParcelamentoAno"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ano:"
         android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/editText3" />
+        android:text="Ano:"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtParcelamentoMes" />
 
     <TextView
         android:id="@+id/lbParcelamentoQuantParcelas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Quantidade de Parcelas:"
         android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/editText4" />
+        android:text="Quantidade de Parcelas:"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtParcelamentoAno" />
 
     <TextView
         android:id="@+id/lbParcelamentoValorParcela"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Valor da Parcela:"
         android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/editText5" />
+        android:text="Valor da Parcela:"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtParcelamentoQtdeParcelas" />
 
     <TextView
         android:id="@+id/lbParcelamentoDescricao"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Descrição:"
         android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        android:text="Descrição:"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtParcelamentoDia" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/txtParcelamentoDia"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="number"
-        android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/lbParcelamentoDia" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/txtParcelamentoDescricao"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Name"
-        android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/lbParcelamentoDescricao" />
 
     <EditText
-        android:id="@+id/editText3"
+        android:id="@+id/txtParcelamentoMes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="number"
         android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="text"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lbParcelamentoMes" />
 
     <EditText
-        android:id="@+id/editText4"
+        android:id="@+id/txtParcelamentoAno"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="number"
-        android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/lbParcelamentoAno" />
 
     <EditText
-        android:id="@+id/editText5"
+        android:id="@+id/txtParcelamentoQtdeParcelas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="number"
-        android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/lbParcelamentoQuantParcelas" />
 
     <EditText
-        android:id="@+id/editText6"
+        android:id="@+id/txtParcelamentoValorParcela"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="numberDecimal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lbParcelamentoValorParcela" />
+
+    <Button
+        android:id="@+id/btnParcelamentoSalvar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Salvar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtParcelamentoValorParcela" />
+
+    <Button
+        android:id="@+id/btnParcelamentoVoltar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Voltar"
+        app:layout_constraintLeft_toRightOf="@+id/btnParcelamentoSalvar"
+        app:layout_constraintTop_toBottomOf="@+id/txtParcelamentoValorParcela" />
+
+    <Button
+        android:id="@+id/btnParcelamentoMostrarParcelamentos"
+        android:layout_width="213dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="8dp"
+        android:text="Mostrar Parcelamentos"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/lbParcelamentoValorParcela" />
+        app:layout_constraintTop_toBottomOf="@+id/btnParcelamentoSalvar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp"
+        tools:layout_editor_absoluteY="511dp"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ProgressBar
+        android:id="@+id/pbParcelamento"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintLeft_toRightOf="@+id/btnParcelamentoVoltar"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_editor_absoluteY="453dp" />
+
+
 </android.support.constraint.ConstraintLayout>
+</ScrollView>

@@ -1,7 +1,9 @@
 package com.lemelo.controle_v5_android_v2;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.net.ConnectivityManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -41,20 +43,55 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        CarregaTelaLogin();
 
+        if(isOnline()){
+            CarregaTelaLogin();
+        } else {
+            CarregaTelaSemInternet();
+        }
+    }
+
+    private void CarregaTelaSemInternet() {
+        setContentView(R.layout.activity_sem_internet);
+        AlertDialog.Builder dialogo = new AlertDialog.Builder(MainActivity.this);
+        dialogo.setTitle("Aviso Técnico!");
+        dialogo.setMessage("Verifique sua conexão com a internet e tente novamente!");
+        dialogo.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        dialogo.show();
+
+    }
+
+    private boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+// test for connection
+        if (cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isAvailable()
+                && cm.getActiveNetworkInfo().isConnected()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void CarregaTelaLogin() {
         setContentView(R.layout.activity_login);
 
+
         final ProgressBar pbLogin = (ProgressBar) findViewById(R.id.pbLogin);
         pbLogin.setVisibility(View.GONE);
+        pbLogin.setProgress(0);
 
         final Button btnLoginLogin = (Button) findViewById(R.id.btnLoginLogin);
         btnLoginLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                pbLogin.setVisibility(View.VISIBLE);
+                Toast.makeText(MainActivity.this, "Passei View.VISIBLE", Toast.LENGTH_LONG).show();
                 final EditText txtLoginUsername = (EditText) findViewById(R.id.txtLoginUsername);
                 final EditText txtLoginPassword = (EditText) findViewById(R.id.txtLoginPassword);
 
@@ -77,8 +114,7 @@ public class MainActivity extends AppCompatActivity {
                 //serverSide = "http://192.168.43.147:5000/";
 
                 try {
-
-                    pbLogin.setVisibility(View.VISIBLE);
+                    pbLogin.setProgress(0);
                     userPostAsync.setProgressBar(pbLogin);
                     userPostAsync.setContext(MainActivity.this);
                     resposta = userPostAsync.execute(serverSide + "login",postParamaters).get();
@@ -86,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
                     if(resposta != null){
                         setCookie(resposta);
                     }
+                    pbLogin.setVisibility(View.GONE);
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -169,10 +206,255 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        final Button btnMainDespesaFixa = (Button) findViewById(R.id.btnMainDespesaFixa);
+        btnMainDespesaFixa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CarregaTelaDespesaFixa();
+            }
+        });
+
+    }
+
+    private void CarregaTelaDespesaFixa() {
+        setContentView(R.layout.activity_despesa_fixa);
     }
 
     private void CarregaTelaParcelamento() {
         setContentView(R.layout.activity_parcelamento);
+
+        final EditText txtParcelamentoDia = (EditText) findViewById(R.id.txtParcelamentoDia);
+        final EditText txtParcelamentoDescricao = (EditText) findViewById(R.id.txtParcelamentoDescricao);
+        final EditText txtParcelamentoMes = (EditText) findViewById(R.id.txtParcelamentoMes);
+        final EditText txtParcelamentoAno = (EditText) findViewById(R.id.txtParcelamentoAno);
+        final EditText txtParcelamentoQtdeParcelas = (EditText) findViewById(R.id.txtParcelamentoQtdeParcelas);
+        final EditText txtParcelamentoValorParcela = (EditText) findViewById(R.id.txtParcelamentoValorParcela);
+
+
+        final ProgressBar pbParcelamento = (ProgressBar) findViewById(R.id.pbParcelamento);
+        pbParcelamento.setVisibility(View.GONE);
+
+        final Button btnParcelamentoSalvar = (Button) findViewById(R.id.btnParcelamentoSalvar);
+        btnParcelamentoSalvar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("dia",Integer.parseInt(txtParcelamentoDia.getText().toString()));
+                    jsonObject.put("descricao", txtParcelamentoDescricao.getText().toString());
+                    jsonObject.put("mes", txtParcelamentoMes.getText().toString());
+                    jsonObject.put("ano", Integer.parseInt(txtParcelamentoAno.getText().toString()));
+                    jsonObject.put("quantParcelas", Integer.parseInt(txtParcelamentoQtdeParcelas.getText().toString()));
+                    jsonObject.put("valorParcela", Integer.parseInt(txtParcelamentoValorParcela.getText().toString()));
+
+                    ControlePostAsync controlePostAsync = new ControlePostAsync();
+                    pbParcelamento.setVisibility(View.VISIBLE);
+                    controlePostAsync.setProgressBar(pbParcelamento);
+                    controlePostAsync.setContext(MainActivity.this);
+                    String postRetorno = controlePostAsync.execute(serverSide + "parcelamentos", jsonObject.toString(), MainActivity.this.getCookie()).get();
+
+                    System.out.println(postRetorno);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        final Button btnParcelamentoMostrarParcelamentos = (Button) findViewById(R.id.btnParcelamentoMostrarParcelamentos);
+        btnParcelamentoMostrarParcelamentos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isOnline()){
+                    try {
+                        imprimeParcelamentos();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    CarregaTelaSemInternet();
+                }
+            }
+        });
+
+        final Button btnParcelamentoVoltar = (Button) findViewById(R.id.btnParcelamentoVoltar);
+        btnParcelamentoVoltar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CarregaTelaPrincipal();
+            }
+        });
+    }
+
+    private void imprimeParcelamentos() throws ExecutionException, InterruptedException, JSONException {
+        setContentView(R.layout.activity_imprime_parcelamentos);
+        final Button btnImprimeParcelamentosVoltar = (Button) findViewById(R.id.btnImprimeParcelamentosVoltar);
+        btnImprimeParcelamentosVoltar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CarregaTelaParcelamento();
+            }
+        });
+
+        final ProgressBar pbImprimeParcelamentos = (ProgressBar) findViewById(R.id.pbImprimeParcelamentos);
+        pbImprimeParcelamentos.setVisibility(View.GONE);
+        ControleGetAsync controleGetAsync = new ControleGetAsync();
+
+        pbImprimeParcelamentos.setVisibility(View.VISIBLE);
+        controleGetAsync.setProgressBar(pbImprimeParcelamentos);
+        controleGetAsync.setContext(MainActivity.this);
+
+        String parcelamentos = controleGetAsync.execute(serverSide + "parcelamentos", this.getCookie()).get();
+
+        JSONArray jsonArrayParcelamentos = new JSONArray(parcelamentos);
+
+        List<Parcelamento> listParcelamentos = new ArrayList<>();
+
+        for(int i = 0; i < jsonArrayParcelamentos.length(); i++){
+            Parcelamento p1 = new Parcelamento();
+            JSONObject jsonImprimeParcelamentos = jsonArrayParcelamentos.getJSONObject(i);
+
+            if(jsonImprimeParcelamentos.has("identifier")){
+                p1.setIdentifier(jsonImprimeParcelamentos.getLong("identifier"));
+            }
+            if(jsonImprimeParcelamentos.has("dia")){
+                p1.setDia(jsonImprimeParcelamentos.getInt("dia"));
+            }
+            if(jsonImprimeParcelamentos.has("descricao")){
+                p1.setDescricao(jsonImprimeParcelamentos.getString("descricao"));
+            }
+            if(jsonImprimeParcelamentos.has("mes")){
+                p1.setMes(jsonImprimeParcelamentos.getString("mes"));
+            }
+            if(jsonImprimeParcelamentos.has("ano")){
+                p1.setAno(jsonImprimeParcelamentos.getInt("ano"));
+            }
+            if(jsonImprimeParcelamentos.has("quantParcelas")){
+                p1.setQuantParcelas(jsonImprimeParcelamentos.getInt("quantParcelas"));
+            }
+            if(jsonImprimeParcelamentos.has("valorParcela")){
+                p1.setValorParcela(jsonImprimeParcelamentos.getInt("valorParcela"));
+            }
+            listParcelamentos.add(p1);
+        }
+
+        ArrayAdapter<Parcelamento> parcelamentoArrayAdapter = new ArrayAdapter<Parcelamento>(MainActivity.this,android.R.layout.simple_list_item_1,listParcelamentos);
+        ListView lvImprimeParcelamento = (ListView) findViewById(R.id.lvImprimeParcelamento);
+        lvImprimeParcelamento.setAdapter(parcelamentoArrayAdapter);
+
+        lvImprimeParcelamento.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Parcelamento parcelamentoSelecionado = (Parcelamento) parent.getItemAtPosition(position);
+                trataParcelamentoSelecionado(parcelamentoSelecionado);
+            }
+        });
+    }
+
+    private void trataParcelamentoSelecionado(final Parcelamento parcelamentoSelecionado) {
+        AlertDialog.Builder dialogo = new AlertDialog.Builder(MainActivity.this);
+        dialogo.setTitle("Editar / Apagar?");
+        dialogo.setMessage(parcelamentoSelecionado.toString());
+
+        dialogo.setNegativeButton("Editar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                CarregaTelaEditarParcelamento(parcelamentoSelecionado);
+            }
+        });
+
+        dialogo.setPositiveButton("Apagar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Long idDelete = parcelamentoSelecionado.getIdentifier();
+                ControleDeleteAsync controleDeleteAsync = new ControleDeleteAsync();
+                controleDeleteAsync.execute(serverSide + "parcelamentos/" + idDelete, MainActivity.this.getCookie());
+                try {
+                    imprimeParcelamentos();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        dialogo.setNeutralButton("Cancelar", null);
+        dialogo.show();
+    }
+
+    private void CarregaTelaEditarParcelamento(final Parcelamento parcelamentoSelecionado) {
+        setContentView(R.layout.activity_edita_parcelamento);
+
+        final EditText txtEditaParcelamentoDia = (EditText) findViewById(R.id.txtEditaParcelamentoDia);
+        txtEditaParcelamentoDia.setText(String.valueOf(parcelamentoSelecionado.getDia()));
+        final EditText txtEditaParcelamentoDescricao = (EditText) findViewById(R.id.txtEditaParcelamentoDescricao);
+        txtEditaParcelamentoDescricao.setText(parcelamentoSelecionado.getDescricao());
+        final EditText txtEditaParcelamentoMes = (EditText) findViewById(R.id.txtEditaParcelamentoMes);
+        txtEditaParcelamentoMes.setText(parcelamentoSelecionado.getMes());
+        final EditText txtEditaParcelamentoAno = (EditText) findViewById(R.id.txtEditaParcelamentoAno);
+        txtEditaParcelamentoAno.setText(String.valueOf(parcelamentoSelecionado.getAno()));
+        final EditText txtEditaParcelamentoQtdeParcelas = (EditText) findViewById(R.id.txtEditaParcelamentoQtdeParcelas);
+        txtEditaParcelamentoQtdeParcelas.setText(String.valueOf(parcelamentoSelecionado.getQuantParcelas()));
+        final EditText txtEditaParcelamentoValorParcela = (EditText) findViewById(R.id.txtEditaParcelamentoValorParcela);
+        txtEditaParcelamentoValorParcela.setText(String.valueOf(parcelamentoSelecionado.getValorParcela()));
+
+        final ProgressBar pbEditaParcelamento = (ProgressBar) findViewById(R.id.pbEditaParcelamento);
+        pbEditaParcelamento.setVisibility(View.GONE);
+
+        final Button btnEditaParcelamentoSalvar = (Button) findViewById(R.id.btnEditaParcelamentoSalvar);
+        btnEditaParcelamentoSalvar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("dia",Integer.parseInt(txtEditaParcelamentoDia.getText().toString()));
+                    jsonObject.put("descricao",txtEditaParcelamentoDescricao.getText().toString());
+                    jsonObject.put("mes", txtEditaParcelamentoMes.getText().toString());
+                    jsonObject.put("ano", Integer.parseInt(txtEditaParcelamentoAno.getText().toString()));
+                    jsonObject.put("quantParcelas", Integer.parseInt(txtEditaParcelamentoQtdeParcelas.getText().toString()));
+                    jsonObject.put("valorParcela", Integer.parseInt(txtEditaParcelamentoValorParcela.getText().toString()));
+
+                    ControlePutAsync controlePutAsync = new ControlePutAsync();
+                    pbEditaParcelamento.setVisibility(View.VISIBLE);
+                    controlePutAsync.setProgressBar(pbEditaParcelamento);
+                    controlePutAsync.setContext(MainActivity.this);
+                    String postRetorno = controlePutAsync.execute(serverSide + "parcelamentos/" + parcelamentoSelecionado.getIdentifier(), jsonObject.toString(), MainActivity.this.getCookie()).get();
+                    System.out.println(postRetorno);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        final Button btnEditaParcelamentoVoltar = (Button) findViewById(R.id.btnEditaParcelamentoVoltar);
+        btnEditaParcelamentoVoltar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    imprimeParcelamentos();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void CarregaTelaEmprestimo() {
@@ -239,7 +521,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    imprimeEmprestimos();
+                    if(isOnline()){
+                        imprimeEmprestimos();
+                    } else {
+                        CarregaTelaSemInternet();
+                    }
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
@@ -492,7 +778,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    imprimeBarganhas();
+                    if(isOnline()){
+                        imprimeBarganhas();
+                    } else {
+                        CarregaTelaSemInternet();
+                    }
+
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
@@ -767,7 +1058,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    imprimeControles();
+                    if(isOnline()){
+                        imprimeControles();
+                    } else {
+                        CarregaTelaSemInternet();
+                    }
+
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {

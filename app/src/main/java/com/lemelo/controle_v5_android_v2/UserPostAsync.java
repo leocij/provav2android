@@ -18,10 +18,11 @@ import java.net.URL;
  * Created by leoci on 26/04/2017.
  */
 
-class UserPostAsync extends AsyncTask<String,Void,String> {
+class UserPostAsync extends AsyncTask<String,Integer,String> {
     private String cookie;
     ProgressBar progressBar;
     MainActivity context;
+    private ProgressDialog progressDialog = null;
 
     public void setProgressBar(ProgressBar progressBar) {
         this.progressBar = progressBar;
@@ -91,19 +92,30 @@ class UserPostAsync extends AsyncTask<String,Void,String> {
         } else {
             return null;
         }
+    }
 
+    @Override
+    protected void onPreExecute(){
+        this.progressDialog = new ProgressDialog(context);
+        this.progressDialog.setMessage("Conectando ao servidor...");
+        this.progressDialog.show();
+        Toast.makeText(context, "Passei onPreExecute", Toast.LENGTH_LONG).show();
     }
 
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-        progressBar.setVisibility(View.GONE);
+        //progressBar.setVisibility(View.GONE);
+        this.progressDialog.dismiss();
         Toast.makeText(context, "Bem Vindo!", Toast.LENGTH_LONG).show();
-
     }
 
     protected void onProgressUpdate(Integer... progress){
-        progressBar.setProgress(progress[0]);
+        super.onProgressUpdate(progress);
+        Toast.makeText(context, "Passei onProgressUpdate: " + progress, Toast.LENGTH_LONG).show();
+        if(this.progressBar!=null){
+            progressBar.setProgress(progress[0]);
+        }
     }
 
     public String getCookie() {
