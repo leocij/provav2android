@@ -214,10 +214,240 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        final Button btnMainGanhos = (Button) findViewById(R.id.btnMainGanhos);
+        btnMainGanhos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CarregaTelaGanhos();
+            }
+        });
+
+    }
+
+    private void CarregaTelaGanhos() {
+        setContentView(R.layout.activity_ganho);
+
+
     }
 
     private void CarregaTelaDespesaFixa() {
         setContentView(R.layout.activity_despesa_fixa);
+
+        final EditText txtDespesaFixaDiaPgto = (EditText) findViewById(R.id.txtDespesaFixaDiaPgto);
+        final EditText txtDespesaFixaDescricao = (EditText) findViewById(R.id.txtDespesaFixaDescricao);
+        final EditText txtDespesaFixaMes = (EditText) findViewById(R.id.txtDespesaFixaMes);
+        final EditText txtDespesaFixaAno = (EditText) findViewById(R.id.txtDespesaFixaAno);
+
+        final ProgressBar pbDespesaFixa = (ProgressBar) findViewById(R.id.pbDespesaFixa);
+        pbDespesaFixa.setVisibility(View.GONE);
+
+        final Button btnDespesaFixaSalvar = (Button) findViewById(R.id.btnDespesaFixaSalvar);
+        btnDespesaFixaSalvar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JSONObject jsonObject = new JSONObject();
+
+                try {
+                    jsonObject.put("diaPgto",Integer.parseInt(txtDespesaFixaDiaPgto.getText().toString()));
+                    jsonObject.put("descricao", txtDespesaFixaDescricao.getText().toString());
+                    jsonObject.put("mes", txtDespesaFixaMes.getText().toString());
+                    jsonObject.put("ano", Integer.parseInt(txtDespesaFixaAno.getText().toString()));
+
+                    ControlePostAsync controlePostAsync = new ControlePostAsync();
+                    pbDespesaFixa.setVisibility(View.VISIBLE);
+                    controlePostAsync.setProgressBar(pbDespesaFixa);
+                    controlePostAsync.setContext(MainActivity.this);
+                    String postRetorno = controlePostAsync.execute(serverSide + "despesaFixas", jsonObject.toString(), MainActivity.this.getCookie()).get();
+
+                    System.out.println(postRetorno);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        final Button btnDespesaFixaVoltar = (Button) findViewById(R.id.btnDespesaFixaVoltar);
+        btnDespesaFixaVoltar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CarregaTelaPrincipal();
+            }
+        });
+
+        final Button btnDespesaFixaMostrar = (Button) findViewById(R.id.btnDespesaFixaMostrar);
+        btnDespesaFixaMostrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    imprimeDespesaFixas();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void imprimeDespesaFixas() throws ExecutionException, InterruptedException, JSONException {
+        setContentView(R.layout.activity_imprime_despesa_fixa);
+
+        final ProgressBar pbImprimeDespesaFixa = (ProgressBar) findViewById(R.id.pbImprimeDespesaFixa);
+        pbImprimeDespesaFixa.setVisibility(View.GONE);
+
+        final Button btnImprimeDespesaFixaVoltar = (Button) findViewById(R.id.btnImprimeDespesaFixaVoltar);
+        btnImprimeDespesaFixaVoltar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CarregaTelaDespesaFixa();
+            }
+        });
+
+        ControleGetAsync controleGetAsync = new ControleGetAsync();
+        pbImprimeDespesaFixa.setVisibility(View.VISIBLE);
+        controleGetAsync.setProgressBar(pbImprimeDespesaFixa);
+        controleGetAsync.setContext(MainActivity.this);
+
+        String string = controleGetAsync.execute(serverSide + "despesaFixas", this.getCookie()).get();
+
+        JSONArray jsonArray = new JSONArray(string);
+        List<DespesaFixa> list = new ArrayList<>();
+
+        for(int i = 0; i < jsonArray.length(); i++){
+            DespesaFixa l = new DespesaFixa();
+
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+            if(jsonObject.has("identifier")){
+                l.setIdentifier(jsonObject.getLong("identifier"));
+            }
+            if(jsonObject.has("diaPgto")){
+                l.setDia(jsonObject.getInt("diaPgto"));
+            }
+            if(jsonObject.has("descricao")){
+                l.setDescricao(jsonObject.getString("descricao"));
+            }
+            if(jsonObject.has("mes")){
+                l.setMes(jsonObject.getString("mes"));
+            }
+            if(jsonObject.has("ano")){
+                l.setAno(jsonObject.getInt("ano"));
+            }
+            list.add(l);
+        }
+
+        ArrayAdapter<DespesaFixa> arrayAdapter = new ArrayAdapter<DespesaFixa>(MainActivity.this,android.R.layout.simple_list_item_1,list);
+        ListView lvDespesaFixa = (ListView) findViewById(R.id.lvDespesaFixa);
+        lvDespesaFixa.setAdapter(arrayAdapter);
+
+        lvDespesaFixa.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                DespesaFixa despesaFixaSelecionado = (DespesaFixa) parent.getItemAtPosition(position);
+                trataDespesaFixaSelecionado(despesaFixaSelecionado);
+            }
+        });
+    }
+
+    private void trataDespesaFixaSelecionado(final DespesaFixa despesaFixaSelecionado) {
+        AlertDialog.Builder dialogo = new AlertDialog.Builder(MainActivity.this);
+        dialogo.setTitle("Editar / Apagar?");
+        dialogo.setMessage(despesaFixaSelecionado.toString());
+
+        dialogo.setNegativeButton("Editar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                CarregaTelaEditaDespesaFixa(despesaFixaSelecionado);
+            }
+        });
+
+        dialogo.setPositiveButton("Apagar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Long idDelete = despesaFixaSelecionado.getIdentifier();
+                ControleDeleteAsync controleDeleteAsync = new ControleDeleteAsync();
+                controleDeleteAsync.execute(serverSide + "despesaFixas/" + idDelete, MainActivity.this.getCookie());
+                try {
+                    imprimeDespesaFixas();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        dialogo.setNeutralButton("Cancelar", null);
+        dialogo.show();
+    }
+
+    private void CarregaTelaEditaDespesaFixa(final DespesaFixa despesaFixaSelecionado) {
+        setContentView(R.layout.activity_edita_despesa_fixa);
+
+        final EditText txtEditaDespesaFixaDiaPgto = (EditText) findViewById(R.id.txtEditaDespesaFixaDiaPgto);
+        txtEditaDespesaFixaDiaPgto.setText(String.valueOf(despesaFixaSelecionado.getDia()));
+        final EditText txtEditaDespesaFixaDescricao = (EditText) findViewById(R.id.txtEditaDespesaFixaDescricao);
+        txtEditaDespesaFixaDescricao.setText(despesaFixaSelecionado.getDescricao());
+        final EditText txtEditaDespesaFixaMes = (EditText) findViewById(R.id.txtEditaDespesaFixaMes);
+        txtEditaDespesaFixaMes.setText(despesaFixaSelecionado.getMes());
+        final EditText txtEditaDespesaFixaAno = (EditText) findViewById(R.id.txtEditaDespesaFixaAno);
+        txtEditaDespesaFixaAno.setText(String.valueOf(despesaFixaSelecionado.getAno()));
+
+        final ProgressBar pbEditaDespesaFixaDia = (ProgressBar) findViewById(R.id.pbEditaDespesaFixaDia);
+        pbEditaDespesaFixaDia.setVisibility(View.GONE);
+
+        final Button btnEditaDespesaFixaSalvar = (Button) findViewById(R.id.btnEditaDespesaFixaSalvar);
+        btnEditaDespesaFixaSalvar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("diaPgto", Integer.parseInt(txtEditaDespesaFixaDiaPgto.getText().toString()));
+                    jsonObject.put("descricao", txtEditaDespesaFixaDescricao.getText().toString());
+                    jsonObject.put("mes", txtEditaDespesaFixaMes.getText().toString());
+                    jsonObject.put("ano", Integer.parseInt(txtEditaDespesaFixaAno.getText().toString()));
+
+                    ControlePutAsync controlePutAsync = new ControlePutAsync();
+                    pbEditaDespesaFixaDia.setVisibility(View.VISIBLE);
+                    controlePutAsync.setProgressBar(pbEditaDespesaFixaDia);
+                    controlePutAsync.setContext(MainActivity.this);
+                    String postRetorno = controlePutAsync.execute(serverSide + "despesaFixas/" + despesaFixaSelecionado.getIdentifier(), jsonObject.toString(), MainActivity.this.getCookie()).get();
+
+                    System.out.println(postRetorno);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        final Button btnEditaDespesaFixaCancelar = (Button) findViewById(R.id.btnEditaDespesaFixaCancelar);
+        btnEditaDespesaFixaCancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    imprimeDespesaFixas();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
 
     private void CarregaTelaParcelamento() {

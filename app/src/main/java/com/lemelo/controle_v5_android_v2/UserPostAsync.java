@@ -96,17 +96,14 @@ class UserPostAsync extends AsyncTask<String,Integer,String> {
 
     @Override
     protected void onPreExecute(){
-        this.progressDialog = new ProgressDialog(context);
-        this.progressDialog.setMessage("Conectando ao servidor...");
-        this.progressDialog.show();
+        progressBar.setVisibility(View.VISIBLE);
         Toast.makeText(context, "Passei onPreExecute", Toast.LENGTH_LONG).show();
     }
 
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-        //progressBar.setVisibility(View.GONE);
-        this.progressDialog.dismiss();
+        progressBar.setVisibility(View.GONE);
         Toast.makeText(context, "Bem Vindo!", Toast.LENGTH_LONG).show();
     }
 

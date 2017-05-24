@@ -48,6 +48,7 @@ class ControlePutAsync extends AsyncTask<String, String, String> {
             int codeResponse = httpURLConnection.getResponseCode();
 
             if (codeResponse != 201) {
+                Toast.makeText(context, "Erro HTTP" + codeResponse, Toast.LENGTH_LONG).show();
                 throw new RuntimeException("Erro HTTP: " + httpURLConnection.getResponseCode());
             }
 

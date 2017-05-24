@@ -7,47 +7,47 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/lbDespesaFixaDiaPgto"
+        android:id="@+id/lbEditaDespesaFixaDiaPgto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Dia do Pagamento:"
+        android:text="Dia de Pagamento:"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="8dp" />
 
     <TextView
-        android:id="@+id/lbDespesaFixaDescricao"
+        android:id="@+id/lbEditaDespesaFixaDescricao"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Descrição:"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/txtDespesaFixaDiaPgto" />
+        app:layout_constraintTop_toBottomOf="@+id/txtEditaDespesaFixaDiaPgto" />
 
     <TextView
-        android:id="@+id/lbDespesaFixaMes"
+        android:id="@+id/lbEditaDespesaFixaMes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Mês:"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/txtDespesaFixaDescricao" />
+        app:layout_constraintTop_toBottomOf="@+id/txtEditaDespesaFixaDescricao" />
 
     <TextView
-        android:id="@+id/lbDespesaFixaAno"
+        android:id="@+id/lbEditaDespesaFixaAno"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Ano:"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/txtDespesaFixaMes" />
+        app:layout_constraintTop_toBottomOf="@+id/txtEditaDespesaFixaMes" />
 
     <EditText
-        android:id="@+id/txtDespesaFixaDiaPgto"
+        android:id="@+id/txtEditaDespesaFixaDiaPgto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -55,79 +55,70 @@
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/lbDespesaFixaDiaPgto" />
+        app:layout_constraintTop_toBottomOf="@+id/lbEditaDespesaFixaDiaPgto" />
 
     <EditText
-        android:id="@+id/txtDespesaFixaDescricao"
+        android:id="@+id/txtEditaDespesaFixaDescricao"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="textPersonName"
+        android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lbDespesaFixaDescricao" />
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/lbEditaDespesaFixaDescricao" />
 
     <EditText
-        android:id="@+id/txtDespesaFixaMes"
+        android:id="@+id/txtEditaDespesaFixaAno"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lbDespesaFixaMes" />
-
-    <EditText
-        android:id="@+id/txtDespesaFixaAno"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="number"
+        android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lbDespesaFixaAno" />
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/lbEditaDespesaFixaAno" />
+
+    <EditText
+        android:id="@+id/txtEditaDespesaFixaMes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/lbEditaDespesaFixaMes" />
 
     <Button
-        android:id="@+id/btnDespesaFixaSalvar"
+        android:id="@+id/btnEditaDespesaFixaSalvar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Salvar"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/txtDespesaFixaAno" />
+        app:layout_constraintTop_toBottomOf="@+id/txtEditaDespesaFixaAno" />
 
     <Button
-        android:id="@+id/btnDespesaFixaVoltar"
+        android:id="@+id/btnEditaDespesaFixaCancelar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Voltar"
-        app:layout_constraintLeft_toRightOf="@+id/btnDespesaFixaSalvar"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/txtDespesaFixaAno" />
-
-    <Button
-        android:id="@+id/btnDespesaFixaMostrar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Mostrar Despesas Fixas"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/btnDespesaFixaVoltar" />
+        android:text="Cancelar"
+        app:layout_constraintLeft_toRightOf="@+id/btnEditaDespesaFixaSalvar"
+        app:layout_constraintTop_toBottomOf="@+id/txtEditaDespesaFixaAno" />
 
     <ProgressBar
-        android:id="@+id/pbDespesaFixa"
+        android:id="@+id/pbEditaDespesaFixaDia"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        app:layout_constraintLeft_toRightOf="@+id/btnDespesaFixaVoltar"
+        app:layout_constraintLeft_toRightOf="@+id/btnEditaDespesaFixaCancelar"
         app:layout_constraintRight_toRightOf="parent"
-        tools:layout_editor_absoluteY="308dp" />
+        tools:layout_editor_absoluteY="324dp" />
+
 </android.support.constraint.ConstraintLayout>
